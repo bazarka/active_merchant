@@ -122,7 +122,7 @@ module ActiveMerchant #:nodoc:
       end
 
       def credit(money, identification, options = {})
-        ActiveMerchant.deprecated Gateway::CREDIT_DEPRECATION_MESSAGE
+        deprecated Gateway::CREDIT_DEPRECATION_MESSAGE
         refund(money, identification, options)
       end
 
@@ -659,7 +659,7 @@ module ActiveMerchant #:nodoc:
       end
 
       def item_amount(amount, currency_code)
-        if amount.to_i < 0 && Gateway.non_fractional_currency?(currency_code)
+        if amount.to_i < 0 && non_fractional_currency?(currency_code)
           amount(amount).to_f.floor
         else
           localized_amount(amount, currency_code)

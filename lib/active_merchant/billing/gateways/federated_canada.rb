@@ -58,7 +58,7 @@ module ActiveMerchant #:nodoc:
       end
 
       def credit(money, authorization, options = {})
-        ActiveMerchant.deprecated CREDIT_DEPRECATION_MESSAGE
+        deprecated CREDIT_DEPRECATION_MESSAGE
         refund(money, authorization, options)
       end
 
@@ -107,6 +107,12 @@ module ActiveMerchant #:nodoc:
         post[:cvv] = creditcard.verification_value
       end
 
+      def expdate(creditcard)
+        year  = sprintf("%.4i", creditcard.year)
+        month = sprintf("%.2i", creditcard.month)
+        "#{month}#{year[-2..-1]}"
+      end
+
       def parse(body)
         body.split('&').inject({}) do |memo, x|
           k, v = x.split('=')
@@ -120,6 +126,7 @@ module ActiveMerchant #:nodoc:
         data = ssl_post(self.live_url, post_data(action, parameters))
         response = parse(data)
         message = message_from(response)
+        test_mode = test?
 
         Response.new(success?(response), message, response,
           :test => test?,

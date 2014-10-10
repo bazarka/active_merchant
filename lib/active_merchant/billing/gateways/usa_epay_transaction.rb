@@ -63,13 +63,6 @@ module ActiveMerchant #:nodoc:
         commit(:refund, post)
       end
 
-      def verify(creditcard, options = {})
-        MultiResponse.run(:use_first_response) do |r|
-          r.process { authorize(1, creditcard, options) }
-          r.process(:ignore_result) { void(r.authorization, options) }
-        end
-      end
-
       def void(authorization, options = {})
         post = { :refNum => authorization }
         commit(:void, post)
@@ -146,15 +139,10 @@ module ActiveMerchant #:nodoc:
       end
 
       def add_credit_card(post, credit_card)
-        if credit_card.track_data.present?
-          post[:magstripe] = credit_card.track_data
-          post[:cardpresent] = true
-        else
-          post[:card]   = credit_card.number
-          post[:cvv2]   = credit_card.verification_value if credit_card.verification_value?
-          post[:expir]  = expdate(credit_card)
-          post[:name]   = credit_card.name
-        end
+        post[:card]   = credit_card.number
+        post[:cvv2]   = credit_card.verification_value if credit_card.verification_value?
+        post[:expir]  = expdate(credit_card)
+        post[:name]   = credit_card.name
       end
 
       # see: http://wiki.usaepay.com/developer/transactionapi#split_payments

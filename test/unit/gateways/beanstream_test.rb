@@ -140,9 +140,7 @@ class BeanstreamTest < Test::Unit::TestCase
   def test_successful_recurring
     @gateway.expects(:ssl_post).returns(successful_recurring_response)
 
-    response = assert_deprecation_warning(Gateway::RECURRING_DEPRECATION_MESSAGE) do
-      @gateway.recurring(@amount, @credit_card, @recurring_options)
-    end
+    assert response = @gateway.recurring(@amount, @credit_card, @recurring_options)
     assert_success response
     assert_equal 'Approved', response.message
   end
@@ -150,17 +148,13 @@ class BeanstreamTest < Test::Unit::TestCase
   def test_successful_update_recurring
     @gateway.expects(:ssl_post).returns(successful_recurring_response)
 
-    response = assert_deprecation_warning(Gateway::RECURRING_DEPRECATION_MESSAGE) do
-      @gateway.recurring(@amount, @credit_card, @recurring_options)
-    end
+    assert response = @gateway.recurring(@amount, @credit_card, @recurring_options)
     assert_success response
     assert_equal 'Approved', response.message
 
     @gateway.expects(:ssl_post).returns(successful_update_recurring_response)
 
-    response = assert_deprecation_warning(Gateway::RECURRING_DEPRECATION_MESSAGE) do
-      @gateway.update_recurring(@amount, @credit_card, @recurring_options.merge(:account_id => response.params["rbAccountId"]))
-    end
+    assert response = @gateway.update_recurring(@amount, @credit_card, @recurring_options.merge(:account_id => response.params["rbAccountId"]))
     assert_success response
     assert_equal "Request successful", response.message
   end
@@ -168,17 +162,13 @@ class BeanstreamTest < Test::Unit::TestCase
   def test_successful_cancel_recurring
     @gateway.expects(:ssl_post).returns(successful_recurring_response)
 
-    response = assert_deprecation_warning(Gateway::RECURRING_DEPRECATION_MESSAGE) do
-      @gateway.recurring(@amount, @credit_card, @recurring_options)
-    end
+    assert response = @gateway.recurring(@amount, @credit_card, @recurring_options)
     assert_success response
     assert_equal 'Approved', response.message
 
     @gateway.expects(:ssl_post).returns(successful_cancel_recurring_response)
 
-    response = assert_deprecation_warning(Gateway::RECURRING_DEPRECATION_MESSAGE) do
-      @gateway.cancel_recurring(:account_id => response.params["rbAccountId"])
-    end
+    assert response = @gateway.cancel_recurring(:account_id => response.params["rbAccountId"])
     assert_success response
     assert_equal "Request successful", response.message
   end
@@ -189,7 +179,7 @@ class BeanstreamTest < Test::Unit::TestCase
     end.returns(successful_purchase_response)
 
     @options[:ip] = "123.123.123.123"
-    @gateway.purchase(@amount, @credit_card, @options)
+    assert response = @gateway.purchase(@amount, @credit_card, @options)
   end
 
   private

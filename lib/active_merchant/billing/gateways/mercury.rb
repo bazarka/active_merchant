@@ -99,7 +99,7 @@ module ActiveMerchant #:nodoc:
             add_customer_data(xml, options)
             add_amount(xml, money, options)
             add_credit_card(xml, credit_card, action)
-            add_address(xml, options) unless credit_card.track_data.present?
+            add_address(xml, options)
           end
         end
         xml = xml.target!
@@ -199,17 +199,20 @@ module ActiveMerchant #:nodoc:
 
       def add_credit_card(xml, credit_card, action)
         xml.tag! 'Account' do
-          if credit_card.track_data.present?
-            xml.tag! 'Track1', credit_card.track_data
-          else
-            xml.tag! 'AcctNo', credit_card.number
-            xml.tag! 'ExpDate', expdate(credit_card)
-          end
+          xml.tag! 'AcctNo', credit_card.number
+          xml.tag! 'ExpDate', expdate(credit_card)
         end
         xml.tag! 'CardType', CARD_CODES[credit_card.brand] if credit_card.brand
 
-        include_cvv = !%w(Return PreAuthCapture).include?(action) && !credit_card.track_data.present?
+        include_cvv = !%w(Return PreAuthCapture).include?(action)
         xml.tag! 'CVVData', credit_card.verification_value if(include_cvv && credit_card.verification_value)
+      end
+
+      def expdate(credit_card)
+        year  = sprintf("%.4i", credit_card.year)
+        month = sprintf("%.2i", credit_card.month)
+
+        "#{month}#{year[-2..-1]}"
       end
 
       def add_address(xml, options)

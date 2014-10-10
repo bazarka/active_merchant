@@ -6,8 +6,6 @@ class EwayTest < Test::Unit::TestCase
       :login => '87654321'
     )
 
-    @amount = 100
-
     @credit_card = credit_card('4646464646464646')
 
     @options = {
@@ -35,7 +33,7 @@ class EwayTest < Test::Unit::TestCase
   def test_successful_purchase
     @gateway.expects(:ssl_post).returns(successful_purchase_response)
 
-    response = @gateway.purchase(@amount, @credit_card, @options)
+    assert response = @gateway.purchase(@amount, @credit_card, @options)
     assert_instance_of Response, response
     assert_success response
     assert_equal '11292', response.authorization
@@ -44,7 +42,7 @@ class EwayTest < Test::Unit::TestCase
   def test_failed_purchase
     @gateway.expects(:ssl_post).returns(failed_purchase_response)
 
-    response = @gateway.purchase(@amount, @credit_card, @options)
+    assert response = @gateway.purchase(@amount, @credit_card, @options)
     assert_instance_of Response, response
     assert_failure response
   end
@@ -54,7 +52,7 @@ class EwayTest < Test::Unit::TestCase
     assert purchase = @gateway.purchase(@amount, @credit_card, @options)
 
     @gateway.expects(:ssl_post).returns(successful_refund_response)
-    response = @gateway.refund(40, purchase.authorization)
+    assert response = @gateway.refund(40, purchase.authorization)
     assert_success response
     assert_equal '40', response.params['ewayreturnamount']
   end
@@ -64,7 +62,7 @@ class EwayTest < Test::Unit::TestCase
     purchase = @gateway.purchase(@amount, @credit_card, @options)
 
     @gateway.expects(:ssl_post).returns(failed_refund_response)
-    response = @gateway.refund(200, purchase.authorization)
+    assert response = @gateway.refund(200, purchase.authorization)
     assert_failure response
     assert_equal '200', response.params['ewayreturnamount']
   end

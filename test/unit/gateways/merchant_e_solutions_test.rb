@@ -116,14 +116,14 @@ class MerchantESolutionsTest < Test::Unit::TestCase
     @gateway.expects(:ssl_post).returns(successful_purchase_response + '&cvv2_result=M')
     assert response = @gateway.purchase(@amount, @credit_card, @options)
     assert_equal response.cvv_result['code'], "M"
-    assert_equal response.cvv_result['message'], "CVV matches"
+    assert_equal response.cvv_result['message'], "Match"
   end
 
   def test_unsuccessful_cvv_check
     @gateway.expects(:ssl_post).returns(failed_purchase_response + '&cvv2_result=N')
     assert response = @gateway.purchase(@amount, @credit_card, @options)
     assert_equal response.cvv_result['code'], "N"
-    assert_equal response.cvv_result['message'], "CVV does not match"
+    assert_equal response.cvv_result['message'], "No Match"
   end
 
   def test_supported_countries

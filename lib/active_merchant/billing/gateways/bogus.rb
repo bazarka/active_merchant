@@ -13,7 +13,7 @@ module ActiveMerchant #:nodoc:
       REFUND_ERROR_MESSAGE = "Bogus Gateway: Use trans_id number ending in 1 for exception, 2 for error and anything else for success"
       CHECK_ERROR_MESSAGE = "Bogus Gateway: Use bank account number ending in 1 for success, 2 for exception and anything else for error"
 
-      self.supported_countries = []
+      self.supported_countries = ['US']
       self.supported_cardtypes = [:bogus]
       self.homepage_url = 'http://example.com'
       self.display_name = 'Bogus'
@@ -42,9 +42,21 @@ module ActiveMerchant #:nodoc:
         end
       end
 
+      def recurring(money, paysource, options = {})
+        money = amount(money)
+        case normalize(paysource)
+        when /1$/
+          Response.new(true, SUCCESS_MESSAGE, {:paid_amount => money}, :test => true)
+        when /2$/
+          Response.new(false, FAILURE_MESSAGE, {:paid_amount => money, :error => FAILURE_MESSAGE },:test => true)
+        else
+          raise Error, error_message(paysource)
+        end
+      end
+
       def credit(money, paysource, options = {})
         if paysource.is_a?(String)
-          ActiveMerchant.deprecated CREDIT_DEPRECATION_MESSAGE
+          deprecated CREDIT_DEPRECATION_MESSAGE
           return refund(money, paysource, options)
         end
 

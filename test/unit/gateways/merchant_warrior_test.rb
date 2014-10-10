@@ -16,7 +16,14 @@ class MerchantWarriorTest < Test::Unit::TestCase
     @failure_amount = 10033
 
     @options = {
-      :address => address,
+      :address => {
+        :name => 'Longbob Longsen',
+        :country => 'AU',
+        :state => 'Queensland',
+        :city => 'Brisbane',
+        :address1 => '123 test st',
+        :zip => '4000'
+      },
       :transaction_product => 'TestProduct'
     }
   end
@@ -75,19 +82,6 @@ class MerchantWarriorTest < Test::Unit::TestCase
     assert_success store
     assert_equal "Operation successful", store.message
     assert_match "KOCI10023982", store.authorization
-  end
-
-  def test_scrub_name
-    @credit_card.first_name = "Chars; Merchant-Warrior Don't Like"
-    @credit_card.last_name = "& More. # Here"
-    @options[:address][:name] = "Ren & Stimpy"
-
-    stub_comms do
-      @gateway.purchase(@success_amount, @credit_card, @options)
-    end.check_request do |endpoint, data, headers|
-      assert_match(/customerName=Ren\+\+Stimpy/, data)
-      assert_match(/paymentCardName=Chars\+Merchant-Warrior\+Dont\+Like\+\+More\.\+\+Here/, data)
-    end.respond_with(successful_purchase_response)
   end
 
   private

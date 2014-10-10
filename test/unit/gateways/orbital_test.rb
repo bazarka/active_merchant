@@ -26,19 +26,19 @@ class OrbitalGatewayTest < Test::Unit::TestCase
     stub_comms do
       @gateway.purchase(50, credit_card, :order_id => '1')
     end.check_request do |endpoint, data, headers|
-      assert_match %r{<CurrencyExponent>2<\/CurrencyExponent>}, data
+      assert_match /<CurrencyExponent>2<\/CurrencyExponent>/, data
     end.respond_with(successful_purchase_response)
 
     stub_comms do
       @gateway.purchase(50, credit_card, :order_id => '1', :currency => 'CAD')
     end.check_request do |endpoint, data, headers|
-      assert_match %r{<CurrencyExponent>2<\/CurrencyExponent>}, data
+      assert_match /<CurrencyExponent>2<\/CurrencyExponent>/, data
     end.respond_with(successful_purchase_response)
 
     stub_comms do
       @gateway.purchase(50, credit_card, :order_id => '1', :currency => 'JPY')
     end.check_request do |endpoint, data, headers|
-      assert_match %r{<CurrencyExponent>0<\/CurrencyExponent>}, data
+      assert_match /<CurrencyExponent>0<\/CurrencyExponent>/, data
     end.respond_with(successful_purchase_response)
   end
 
@@ -63,8 +63,8 @@ class OrbitalGatewayTest < Test::Unit::TestCase
   def test_deprecated_void
     @gateway.expects(:ssl_post).returns(successful_void_response)
 
-    assert_deprecation_warning("Calling the void method with an amount parameter is deprecated and will be removed in a future version.") do
-      assert response = @gateway.void(50, "identifier")
+    assert_deprecation_warning("Calling the void method with an amount parameter is deprecated and will be removed in a future version.", @gateway) do
+      assert response = @gateway.void(@amount, "identifier")
       assert_instance_of Response, response
       assert_success response
       assert_nil response.message
@@ -218,9 +218,7 @@ class OrbitalGatewayTest < Test::Unit::TestCase
 
   def test_default_managed_billing
     response = stub_comms do
-      assert_deprecation_warning(Gateway::RECURRING_DEPRECATION_MESSAGE) do
-        @gateway.add_customer_profile(credit_card, :managed_billing => {:start_date => "10-10-2014" })
-      end
+      @gateway.add_customer_profile(credit_card, :managed_billing => {:start_date => "10-10-2014" })
     end.check_request do |endpoint, data, headers|
       assert_match(/<MBType>R/, data)
       assert_match(/<MBOrderIdGenerationMethod>IO/, data)
@@ -232,12 +230,10 @@ class OrbitalGatewayTest < Test::Unit::TestCase
 
   def test_managed_billing
     response = stub_comms do
-      assert_deprecation_warning(Gateway::RECURRING_DEPRECATION_MESSAGE) do
-        @gateway.add_customer_profile(credit_card, :managed_billing => {:start_date => "10-10-2014",
-                :end_date => "10-10-2015",
-                :max_dollar_value => 1500,
-                :max_transactions => 12})
-      end
+      @gateway.add_customer_profile(credit_card, :managed_billing => {:start_date => "10-10-2014",
+              :end_date => "10-10-2015",
+              :max_dollar_value => 1500,
+              :max_transactions => 12})
     end.check_request do |endpoint, data, headers|
       assert_match(/<MBType>R/, data)
       assert_match(/<MBOrderIdGenerationMethod>IO/, data)
@@ -279,26 +275,6 @@ class OrbitalGatewayTest < Test::Unit::TestCase
       assert_match(/<CustomerRefNum>ABC/, data)
       assert_match(/<CustomerProfileFromOrderInd>S/, data)
       assert_match(/<CustomerProfileOrderOverrideInd>NO/, data)
-    end.respond_with(successful_purchase_response)
-    assert_success response
-  end
-
-  def test_dont_send_customer_profile_from_order_ind_for_profile_purchase
-    @gateway.options[:customer_profiles] = true
-    response = stub_comms do
-      @gateway.purchase(50, nil, :order_id => 1, :customer_ref_num => @customer_ref_num)
-    end.check_request do |endpoint, data, headers|
-      assert_no_match(/<CustomerProfileFromOrderInd>/, data)
-    end.respond_with(successful_purchase_response)
-    assert_success response
-  end
-
-  def test_dont_send_customer_profile_from_order_ind_for_profile_authorize
-    @gateway.options[:customer_profiles] = true
-    response = stub_comms do
-      @gateway.authorize(50, nil, :order_id => 1, :customer_ref_num => @customer_ref_num)
-    end.check_request do |endpoint, data, headers|
-      assert_no_match(/<CustomerProfileFromOrderInd>/, data)
     end.respond_with(successful_purchase_response)
     assert_success response
   end
@@ -476,29 +452,10 @@ class OrbitalGatewayTest < Test::Unit::TestCase
     assert_success response
   end
 
-  ActiveMerchant::Billing::OrbitalGateway::APPROVED.each do |resp_code|
-    define_method "test_approval_response_code_#{resp_code}" do
-      @gateway.expects(:ssl_post).returns(successful_purchase_response(resp_code))
-
-      assert response = @gateway.purchase(50, credit_card, :order_id => '1')
-      assert_instance_of Response, response
-      assert_success response
-    end
-  end
-
-  def test_account_num_is_removed_from_response
-    @gateway.expects(:ssl_post).returns(successful_purchase_response)
-
-    response = @gateway.purchase(50, credit_card, :order_id => '1')
-    assert_instance_of Response, response
-    assert_success response
-    assert_nil response.params['account_num']
-  end
-
   private
 
-  def successful_purchase_response(resp_code = '00')
-    %Q{<?xml version="1.0" encoding="UTF-8"?><Response><NewOrderResp><IndustryType></IndustryType><MessageType>AC</MessageType><MerchantID>700000000000</MerchantID><TerminalID>001</TerminalID><CardBrand>VI</CardBrand><AccountNum>4111111111111111</AccountNum><OrderID>1</OrderID><TxRefNum>4A5398CF9B87744GG84A1D30F2F2321C66249416</TxRefNum><TxRefIdx>1</TxRefIdx><ProcStatus>0</ProcStatus><ApprovalStatus>1</ApprovalStatus><RespCode>#{resp_code}</RespCode><AVSRespCode>H </AVSRespCode><CVV2RespCode>N</CVV2RespCode><AuthCode>091922</AuthCode><RecurringAdviceCd></RecurringAdviceCd><CAVVRespCode></CAVVRespCode><StatusMsg>Approved</StatusMsg><RespMsg></RespMsg><HostRespCode>00</HostRespCode><HostAVSRespCode>Y</HostAVSRespCode><HostCVV2RespCode>N</HostCVV2RespCode><CustomerRefNum></CustomerRefNum><CustomerName></CustomerName><ProfileProcStatus></ProfileProcStatus><CustomerProfileMessage></CustomerProfileMessage><RespTime>144951</RespTime></NewOrderResp></Response>}
+  def successful_purchase_response
+    %q{<?xml version="1.0" encoding="UTF-8"?><Response><NewOrderResp><IndustryType></IndustryType><MessageType>AC</MessageType><MerchantID>700000000000</MerchantID><TerminalID>001</TerminalID><CardBrand>VI</CardBrand><AccountNum>4111111111111111</AccountNum><OrderID>1</OrderID><TxRefNum>4A5398CF9B87744GG84A1D30F2F2321C66249416</TxRefNum><TxRefIdx>1</TxRefIdx><ProcStatus>0</ProcStatus><ApprovalStatus>1</ApprovalStatus><RespCode>00</RespCode><AVSRespCode>H </AVSRespCode><CVV2RespCode>N</CVV2RespCode><AuthCode>091922</AuthCode><RecurringAdviceCd></RecurringAdviceCd><CAVVRespCode></CAVVRespCode><StatusMsg>Approved</StatusMsg><RespMsg></RespMsg><HostRespCode>00</HostRespCode><HostAVSRespCode>Y</HostAVSRespCode><HostCVV2RespCode>N</HostCVV2RespCode><CustomerRefNum></CustomerRefNum><CustomerName></CustomerName><ProfileProcStatus></ProfileProcStatus><CustomerProfileMessage></CustomerProfileMessage><RespTime>144951</RespTime></NewOrderResp></Response>}
   end
 
   def failed_purchase_response

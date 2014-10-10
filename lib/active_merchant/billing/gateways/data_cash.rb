@@ -1,5 +1,3 @@
-require "active_support/core_ext/string/access"
-
 module ActiveMerchant
   module Billing
     class DataCashGateway < Gateway
@@ -140,7 +138,7 @@ module ActiveMerchant
       #   * <tt>:address</tt>:: billing address for card
       def credit(money, reference_or_credit_card, options = {})
         if reference_or_credit_card.is_a?(String)
-          ActiveMerchant.deprecated CREDIT_DEPRECATION_MESSAGE
+          deprecated CREDIT_DEPRECATION_MESSAGE
           refund(money, reference_or_credit_card)
         else
           request = build_refund_request(money, reference_or_credit_card, options)
@@ -184,7 +182,8 @@ module ActiveMerchant
       #   -Builder xml document
       #
       def build_void_or_capture_request(type, money, authorization, options)
-        parsed_authorization = parse_authorization_string(authorization)
+        reference, auth_code, ca_reference = authorization.to_s.split(';')
+
         xml = Builder::XmlMarkup.new :indent => 2
         xml.instruct!
         xml.tag! :Request do
@@ -192,8 +191,8 @@ module ActiveMerchant
 
           xml.tag! :Transaction do
             xml.tag! :HistoricTxn do
-              xml.tag! :reference, parsed_authorization[:reference]
-              xml.tag! :authcode, parsed_authorization[:auth_code]
+              xml.tag! :reference, reference
+              xml.tag! :authcode, auth_code
               xml.tag! :method, type
             end
 
@@ -201,7 +200,6 @@ module ActiveMerchant
               xml.tag! :TxnDetails do
                 xml.tag! :merchantreference, format_reference_number(options[:order_id])
                 xml.tag! :amount, amount(money), :currency => options[:currency] || currency(money)
-                xml.tag! :capturemethod, 'ecomm'
               end
             end
           end
@@ -287,7 +285,6 @@ module ActiveMerchant
             xml.tag! :TxnDetails do
               xml.tag! :merchantreference, format_reference_number(options[:order_id])
               xml.tag! :amount, amount(money), :currency => options[:currency] || currency(money)
-              xml.tag! :capturemethod, 'ecomm'
             end
           end
         end
@@ -329,8 +326,8 @@ module ActiveMerchant
       #   -xml: Builder document containing the markup
       #
       def build_purchase_or_authorization_request_with_continuous_authority_reference_request(type, money, authorization, options)
-        parsed_authorization = parse_authorization_string(authorization)
-        raise ArgumentError, "The continuous authority reference is required for continuous authority transactions" if parsed_authorization[:ca_reference].blank?
+        reference, auth_code, ca_reference = authorization.to_s.split(';')
+        raise ArgumentError, "The continuous authority reference is required for continuous authority transactions" if ca_reference.blank?
 
         xml = Builder::XmlMarkup.new :indent => 2
         xml.instruct!
@@ -339,7 +336,7 @@ module ActiveMerchant
           xml.tag! :Transaction do
             xml.tag! :ContAuthTxn, :type => 'historic'
             xml.tag! :HistoricTxn do
-              xml.tag! :reference, parsed_authorization[:ca_reference]
+              xml.tag! :reference, ca_reference
               xml.tag! :method, type
             end
             xml.tag! :TxnDetails do
@@ -372,15 +369,14 @@ module ActiveMerchant
       #   </Transaction>
       # </Request>
       #
-      def build_transaction_refund_request(money, authorization)
-        parsed_authorization = parse_authorization_string(authorization)
+      def build_transaction_refund_request(money, reference)
         xml = Builder::XmlMarkup.new :indent => 2
         xml.instruct!
         xml.tag! :Request do
           add_authentication(xml)
           xml.tag! :Transaction do
             xml.tag! :HistoricTxn do
-              xml.tag! :reference, parsed_authorization[:reference]
+              xml.tag! :reference, reference
               xml.tag! :method, TRANSACTION_REFUND_TYPE
             end
             unless money.nil?
@@ -589,11 +585,6 @@ module ActiveMerchant
 
       def format_reference_number(number)
         number.to_s.gsub(/[^A-Za-z0-9]/, '').rjust(6, "0").first(30)
-      end
-
-      def parse_authorization_string(authorization)
-        reference, auth_code, ca_reference = authorization.to_s.split(';')
-        {:reference => reference, :auth_code => auth_code, :ca_reference => ca_reference}
       end
     end
   end

@@ -211,7 +211,7 @@ module ActiveMerchant #:nodoc:
       end
 
       def credit(money, authorization, options = {})
-        ActiveMerchant.deprecated CREDIT_DEPRECATION_MESSAGE
+        deprecated CREDIT_DEPRECATION_MESSAGE
         refund(money, authorization, options)
       end
 
@@ -239,8 +239,6 @@ module ActiveMerchant #:nodoc:
       # YYYYMMDD format and can be used to specify when the first charge will be made.
       # If omitted the first charge will be immediate.
       def recurring(money, payment_source, options = {})
-        ActiveMerchant.deprecated RECURRING_DEPRECATION_MESSAGE
-
         requires!(options, [:periodicity, :monthly, :weekly, :daily], :payments)
 
         periodic_type = case options[:periodicity]
@@ -297,15 +295,11 @@ module ActiveMerchant #:nodoc:
 
       # add fields for credit card
       def add_creditcard(params, creditcard)
-        if creditcard.respond_to?(:track_data) && creditcard.track_data.present?
-          params[:track] = creditcard.track_data
-        else
-          params[:name]                 = creditcard.name
-          params[:number]               = creditcard.number
-          params[:expiration_month]     = creditcard.month
-          params[:expiration_year]      = creditcard.year
-          params[:verification_number]  = creditcard.verification_value if creditcard.verification_value?
-        end
+        params[:name]                 = creditcard.name
+        params[:number]               = creditcard.number
+        params[:expiration_month]     = creditcard.month
+        params[:expiration_year]      = creditcard.year
+        params[:verification_number]  = creditcard.verification_value if creditcard.verification_value?
       end
 
       # add field for "instant" transaction, using previous transaction id
@@ -385,6 +379,18 @@ module ActiveMerchant #:nodoc:
         end
         response
       end
+
+      # Make a ruby type out of the response string
+      def normalize(field)
+        case field
+        when "true"   then true
+        when "false"  then false
+        when ""       then nil
+        when "null"   then nil
+        else field
+        end
+      end
+
     end
   end
 end
