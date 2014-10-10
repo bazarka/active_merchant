@@ -57,7 +57,7 @@ module ActiveMerchant #:nodoc:
       end
 
       def credit(money, authorization, options = {})
-        deprecated CREDIT_DEPRECATION_MESSAGE
+        ActiveMerchant.deprecated CREDIT_DEPRECATION_MESSAGE
         refund(money, authorization, options)
       end
 
@@ -123,13 +123,6 @@ module ActiveMerchant #:nodoc:
           xml.tag! 'CARDNUMBER', creditcard.number
           xml.tag! 'EXPDATE', expdate(creditcard)
         end
-      end
-
-      def expdate(creditcard)
-        year  = sprintf("%.4i", creditcard.year)
-        month = sprintf("%.2i", creditcard.month)
-
-        "#{month}#{year[-2..-1]}"
       end
 
       def add_customer_data(xml, options)

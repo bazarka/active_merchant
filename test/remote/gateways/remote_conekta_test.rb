@@ -7,7 +7,7 @@ class RemoteConektaTest < Test::Unit::TestCase
     @amount = 300
 
     @credit_card = ActiveMerchant::Billing::CreditCard.new(
-      number:             "4111111111111111",
+      number:             "4242424242424242",
       verification_value: "183",
       month:              "01",
       year:               "2018",
@@ -46,7 +46,6 @@ class RemoteConektaTest < Test::Unit::TestCase
   def test_unsuccessful_purchase
     assert response = @gateway.purchase(@amount, @declined_card, @options)
     assert_failure response
-    assert_equal "The card was declined", response.message
   end
 
   def test_successful_refund
@@ -55,15 +54,15 @@ class RemoteConektaTest < Test::Unit::TestCase
     assert_success response
     assert_equal nil, response.message
 
-    assert response = @gateway.refund(response.authorization, @amount, @options)
+    assert response = @gateway.refund(@amount, response.authorization, @options)
     assert_success response
     assert_equal nil, response.message
   end
 
   def test_unsuccessful_refund
-    assert response = @gateway.refund("1", @amount, @options)
+    assert response = @gateway.refund(@amount, "1", @options)
     assert_failure response
-    assert_equal "The charge does not exist or it is not suitable for this operation", response.message
+    assert_equal "The resource was not found.", response.message
   end
 
   def test_successful_authorize
@@ -75,7 +74,6 @@ class RemoteConektaTest < Test::Unit::TestCase
   def test_unsuccessful_authorize
     assert response = @gateway.authorize(@amount, @declined_card, @options)
     assert_failure response
-    assert_equal "The card was declined", response.message
   end
 
   def test_successful_capture
@@ -83,37 +81,21 @@ class RemoteConektaTest < Test::Unit::TestCase
     assert_success response
     assert_equal nil, response.message
 
-    assert response = @gateway.capture(response.authorization, @amount, @options)
+    assert response = @gateway.capture(@amount, response.authorization, @options)
     assert_success response
     assert_equal nil, response.message
   end
 
-  def test_successful_store
-    assert response = @gateway.store(@credit_card, {name: "John Doe", email: "email@example.com"})
-    assert_success response
-    assert_equal "customer", response.params["object"]
-    assert_equal "John Doe", response.params["name"]
-    assert_equal "email@example.com", response.params["email"]
-  end
-
-  def test_successful_unstore
-    creation = @gateway.store(@credit_card, {name: "John Doe", email: "email@example.com"})
-    assert response = @gateway.unstore(creation.params['id'])
-    assert_success response
-    assert_equal true, response.params["deleted"]
-  end
-
   def test_unsuccessful_capture
-    @options[:order_id] = "1"
-    assert response = @gateway.capture(@amount, @options)
+    assert response = @gateway.capture(@amount, "1", @options)
     assert_failure response
-    assert_equal "The charge does not exist or it is not suitable for this operation", response.message
+    assert_equal "The resource was not found.", response.message
   end
 
-  def test_invalid_login
+  def test_invalid_key
     gateway = ConektaGateway.new(key: 'invalid_token')
     assert response = gateway.purchase(@amount, @credit_card, @options)
     assert_failure response
-    assert_equal "Unrecognized authentication token", response.message
+    assert_equal "Unrecognized access key.", response.message
   end
 end

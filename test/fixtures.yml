@@ -11,17 +11,30 @@
 # Paste any required PEM certificates after the pem key.
 #
 
+adyen:
+  company: company
+  merchant: merchant
+  password: password
+
 app55:
   api_key: "QDtACYMCFqtuKOQ22QtCkGR1TzD7XM8i"
   api_secret: "yT1FRpuusBIQoEBIfIQ8bPStkl7yzdTz"
 
+# Working credentials, no need to replace
 authorize_net:
-  login: X
-  password: Y
+  login: 4Pf3E54zCsW
+  password: 337UTt4y6DB64ft8
 
 # Working credentials, no need to replace
 balanced:
   login: 'e1c5ad38d1c711e1b36c026ba7e239a9'
+
+# Bank Frick doesn't provide public testing data
+bank_frick:
+  sender: sender-uuid
+  channel: channel-uuid
+  userid: user-uuid
+  userpwd: password
 
 banwire:
   login: "desarrollo"
@@ -52,13 +65,18 @@ beanstream_interac:
   user: username
   password: password
 
+bit_pay:
+  api_key: 'rKrahSl7WRrYeKRUhGzbvW3nBzo0jG4FPaL8uPYaoPk'
+
 blue_pay:
   login: '100096218902'
   password: 'MBUVE4G1BACMFM4W3XQHUUL2SMQRP.LW'
 
-braintree_orange:
-  login: demo
-  password: password
+borgun:
+  processor: 118
+  merchant_id: 118
+  username: spreedly
+  password: Qxi.34k
 
 braintree_blue:
   merchant_id: X
@@ -71,6 +89,15 @@ braintree_blue_with_processing_rules:
   public_key: Y
   private_key: Z
 
+braintree_orange:
+  login: demo
+  password: password
+
+# Working credentials, no need to replace
+bridge_pay:
+  user_name: Spre3676
+  password: H3392nc5
+
 #Username/Password given in sign up email. Not MMS credentials
 card_save:
   login: merchant_id
@@ -80,19 +107,44 @@ card_stream:
   login: X
   password: Y
 
-card_stream_modern:
-  login: "0000992"
+# Cashnet doesn't provide public testing data
+cashnet:
+  merchant: 'X'
+  operator: 'X'
+  password: 'X'
+  merchant_gateway_name: 'X'
+
+cecabank:
+  merchant_id: MERCHANTID
+  acquirer_bin: ACQUIRERBIN
+  terminal_id: TERMINALID
+  key: KEY
 
 certo_direct:
   login: 1
   password: vP6OwK3
 
+checkout:
+  merchant_id: SBMTEST
+  password: Password1!
+
+# Contact Support at it_support@commercegate.com for credentials and offer/site
+commercegate:
+  login: "XXXXXXX"
+  password: "XXXXXXX"
+  site_id: "XXXXXXX"
+  offer_id: "XXXXXXX"
+  card_number: "XXXXXXXXXXXXXXXX"
+
+conekta:
+  key: key_eYvWV7gSDkNYXsmr
+
+# To get 100% passing Cybersource remote tests, you must ask
+# Cybersource support to enable the recurring and pinless debit
+# services on your test account.
 cyber_source:
   login: X
   password: Y
-
-conekta:
-  key: 1tv5yJp3xnVZ7eK67m4h
 
 data_cash:
   login: X
@@ -108,6 +160,7 @@ efsnet:
 elavon:
   login: LOGIN
   password: PASSWORD
+  user: USER (often the same as LOGIN)
 
 # login: merchant number
 # password: referrer url (for authorize authentication)
@@ -147,13 +200,18 @@ federated_canada:
   password: password
 
 finansbank:
-  login: TEST
-  password: TEST
-  client_id: TEST
+  login: FINANSAPI
+  password: FINANS06
+  client_id: 600100000
+
+first_giving:
+  application_key: ''
+  security_token:  ''
+  charity_id: "1234"
 
 first_pay:
-  login:
-  password:
+  transaction_center_id: 1264
+  gateway_id: "a91c38c3-7d7f-4d29-acc7-927b4dca0dbe"
 
 firstdata_e4:
   login:
@@ -165,6 +223,24 @@ garanti:
   merchant_id: 600218
   password: "123qweASD"
 
+global_transport:
+  global_user_name: "USERNAME"
+  global_password: "PASSWORD"
+  term_type: "ABC"
+
+hdfc:
+  login: LOGIN
+  password: PASSWORD
+
+# Working credentials, no need to replace
+hps:
+  secret_api_key: "skapi_cert_MYl2AQAowiQAbLp5JesGKh7QFkcizOP2jcX9BrEMqQ"
+
+iats_payments:
+  agent_code: TEST88
+  password: TEST88
+  region: na
+
 # login: merchant number
 # password: password for the PEM secret key
 # pem: public certificate and PEM secret key
@@ -174,13 +250,17 @@ ideal_rabobank:
   pem: |
     PASTE YOUR PEM FILE HERE
 
+inspire:
+  login: demo
+  password: password
+
 instapay:
   login: TEST0
   password:
 
-inspire:
-  login: demo
-  password: password
+iridium:
+    login: LOGIN
+    password: PASSWORD
 
 itransact:
   login: API_ACCESS_USERNAME
@@ -189,14 +269,6 @@ itransact:
 
 jetpay:
   login: TESTTERMINAL
-
-hdfc:
-  login: LOGIN
-  password: PASSWORD
-
-iridium:
-    login: LOGIN
-    password: PASSWORD
 
 linkpoint:
   login: STOREID
@@ -207,6 +279,11 @@ litle:
   login: ACTIVE
   password: MERCHANT
   merchant_id: 101
+
+# Working test credentials, no need to replace
+maxipago:
+  login: "100"
+  password: "21g8u6gh6szw1gywfs165vui"
 
 # Working test credentials, no need to replace
 merchant_esolutions:
@@ -234,8 +311,8 @@ merchant_warrior:
 
 # Working credentials, no need to replace
 mercury:
-  login: '395347306=TOKEN'
-  password: '123TOKEN'
+  login: '023358150511666'
+  password: 'xyz'
 
 mercury_no_tokenization:
   login: '595901'
@@ -247,14 +324,6 @@ metrics_global:
   password: 'password'
 
 # Working credentials, no need to replace
-migs_purchase: # MiGS gateway for purchase mode
-  login: TESTANZTEST3
-  password: '6447E199'
-  secure_hash: '76AF3392002D202A60D0AB5F9D81653C'
-  advanced_login: noack_ama
-  advanced_password: test1234
-
-# Working credentials, no need to replace
 migs_capture: # MiGS gateway for auth/capture mode
   login: TESTANZTEST2
   password: '8ED23813'
@@ -262,9 +331,20 @@ migs_capture: # MiGS gateway for auth/capture mode
   advanced_login: noack_ama
   advanced_password: test1234
 
+# Working credentials, no need to replace
+migs_purchase: # MiGS gateway for purchase mode
+  login: TESTANZTEST3
+  password: '6447E199'
+  secure_hash: '76AF3392002D202A60D0AB5F9D81653C'
+  advanced_login: noack_ama
+  advanced_password: test1234
+
 modern_payments:
   login: login
   password: password
+
+mollie_ideal:
+  api_key: 'test_8isBjQoJXJoiXRSzjhwKPO1Bo9AkVA'
 
 # Working credentials, no need to replace
 moneris:
@@ -285,9 +365,13 @@ nab_transact:
   password: changeit
 
 # Working credentials, no need to replace
-nab_transact_card_acceptor:
+nab_transact_privileged:
   login: XYZ0010
   password: abcd1234
+
+net_registry:
+  login: X
+  password: Y
 
 netaxept:
   login: LOGIN
@@ -303,9 +387,9 @@ netpay:
   login: POS
   password: plaza2020
 
-net_registry:
-  login: X
-  password: Y
+network_merchants:
+  login: demo
+  password: password
 
 nmi:
   login: demo
@@ -317,14 +401,15 @@ ogone:
   password: PASSWORD
   signature: SIGNATURE
 
-optimal_payment:
-  login: test
-  password: test
-  account: 'ACCOUNT_NUMBER'
+# Working credentials, no need to replace
+openpay:
+  key: 'sk_e568c42a6c384b7ab02cd47d2e407cab'
+  merchant_id: 'mzdtln0bmtms6o3kck8f'
 
-paybox_direct:
-  login: 199988899
-  password: 1999888I
+optimal_payment:
+  store_id: test
+  password: test
+  account_number: ACCOUNTNUMBER
 
 orbital_gateway:
   login: LOGIN
@@ -332,9 +417,28 @@ orbital_gateway:
   merchant_id: MERCHANTID
 
 # Working credentials, no need to replace
+pago_facil:
+  branch_id: 60f961360ca187d533d5adba7d969d6334771370
+  merchant_id: 62ad6f592ecf2faa87ef2437ed85a4d175e73c58
+  service_id: 3
+
+# Working credentials, no need to replace
 pay_gate_xml:
   login: '10011021600'
   password: 'test'
+
+# Working credentials, no need to replace
+pay_junction:
+  login: 'pj-ql-01'
+  password: 'pj-ql-01p'
+
+pay_secure:
+  login: LOGIN
+  password: PASSWORD
+
+paybox_direct:
+  login: 199988899
+  password: 1999888I
 
 payex:
   account: ACCOUNT
@@ -350,11 +454,6 @@ payflow_uk:
   login: LOGIN
   password: PASSWORD
   partner: PayPalUk
-
-# Working credentials, no need to replace
-pay_junction:
-  login: 'pj-ql-01'
-  password: 'pj-ql-01p'
 
 payment_express:
   login: LOGIN
@@ -377,6 +476,10 @@ paypal_signature:
   password: PASSWORD
   signature: SIGNATURE
 
+payscout:
+  username: demo
+  password: password
+
 payu_in:
   login: C0Dr8m
   secret: 3sf0jURk
@@ -386,27 +489,12 @@ payway:
   password:
   pem:
 
-pay_secure:
-  login: LOGIN
-  password: PASSWORD
-
 pin:
   api_key: "I_mo9BUUUXIwXF-avcs3LA"
 
 plugnpay:
   login: LOGIN
   password: PASSWORD
-
-pxpay:
-  login: LOGIN
-  password: PASSWORD
-
-redsys:
-  login: MERCHANT CODE
-  secret_key: SECRET KEY
-
-sage_pay:
-  login: LOGIN
 
 # Working credentials, no need to replace
 psigate:
@@ -473,15 +561,20 @@ psl_visa_debit_address:
   state:
   zip:
 
-payscout:
-  username: demo
-  password: password
+pxpay:
+  login: LOGIN
+  password: PASSWORD
+
+quantum:
+  login: X
+  password: Y
 
 # Quickpay offers a test account.
 # To log in to the manager, use demo@quickpay.net and test234
 quickpay:
   login: 89898978
   password: "29p61DveBZ79c3144LW61lVz1qrwk2gfAFCxPyi5sn49m3Y3IRK5M6SN5d8a68u7"
+
 # To get the right apikey, log in to the manager.
 # Go to Indstillinger > API adgang and make sure you have the right key in the fixture.
 quickpay_with_api_key:
@@ -489,10 +582,6 @@ quickpay_with_api_key:
   password: "29p61DveBZ79c3144LW61lVz1qrwk2gfAFCxPyi5sn49m3Y3IRK5M6SN5d8a68u7"
   apikey: "fB46983ZwR5dzy46A3r6ngDx7P37N5YTu1F4S9W2JKCs9v4t5L9m2Q8Mlbjpa2I1"
   version: 7
-
-quantum:
-  login: X
-  password: Y
 
 raven_pac_net:
   user: ernest
@@ -503,45 +592,13 @@ realex:
   login: X
   password: Y
 
-realex_with_account:
-  login: X
-  password: Y
-  account: testaccount
-
-# Realex doesn't provide public testing data
-# Fill in the card numbers with the Realex test
-# data.
-realex_visa:
-  number:
-  month: '6'
-  year: '2020'
-  verification_value: '123'
-
-realex_visa_declined:
-  number:
-  month: '6'
-  year: '2020'
-  verification_value: '123'
-
-realex_visa_referral_a:
-  number:
-  month: '6'
-  year: '2020'
-  verification_value: '123'
-
-realex_visa_referral_b:
-  number:
-  month: '6'
-  year: '2020'
-  verification_value: '123'
-
-realex_visa_coms_error:
-  number:
-  month: '6'
-  year: '2020'
-  verification_value: '123'
-
 realex_mastercard:
+  number:
+  month: '6'
+  year: '2020'
+  verification_value: '123'
+
+realex_mastercard_coms_error:
   number:
   month: '6'
   year: '2020'
@@ -565,23 +622,62 @@ realex_mastercard_referral_b:
   year: '2020'
   verification_value: '123'
 
-realex_mastercard_coms_error:
+# Realex doesn't provide public testing data
+# Fill in the card numbers with the Realex test
+# data.
+realex_visa:
   number:
   month: '6'
   year: '2020'
   verification_value: '123'
 
-samurai:
-  login: 'a1ebafb6da5238fb8a3ac9f6'
-  password: 'ae1aa640f6b735c4730fbb56'
-  processor_token: '5a0e1ca1e5a11a2997bbf912'
+realex_visa_coms_error:
+  number:
+  month: '6'
+  year: '2020'
+  verification_value: '123'
+
+realex_visa_declined:
+  number:
+  month: '6'
+  year: '2020'
+  verification_value: '123'
+
+realex_visa_referral_a:
+  number:
+  month: '6'
+  year: '2020'
+  verification_value: '123'
+
+realex_visa_referral_b:
+  number:
+  month: '6'
+  year: '2020'
+  verification_value: '123'
+
+realex_with_account:
+  login: X
+  password: Y
+  account: testaccount
+
+redsys:
+  login: MERCHANT CODE
+  secret_key: SECRET KEY
 
 sage:
   login: login
   password: password
 
+sage_pay:
+  login: LOGIN
+
 sallie_mae:
   login: TEST0
+
+samurai:
+  login: 'a1ebafb6da5238fb8a3ac9f6'
+  password: 'ae1aa640f6b735c4730fbb56'
+  processor_token: '5a0e1ca1e5a11a2997bbf912'
 
 secure_net:
   login: X
@@ -591,13 +687,13 @@ secure_pay:
   login: LOGIN
   password: PASSWORD
 
-secure_pay_tech:
-  login: TESTDIGISPL1
-  password: d557591484cb2cd12bba445aba420d2c69cd6a88
-
 secure_pay_au:
   login: ABC0030
   password: abc123
+
+secure_pay_tech:
+  login: TESTDIGISPL1
+  password: d557591484cb2cd12bba445aba420d2c69cd6a88
 
 #  Replace with your serial numbers for the skipjack test environment
 skipjack:
@@ -632,10 +728,6 @@ transax:
   login: transaxdemo
   password: nelix123
 
-transnational:
-  login: demo
-  password: password
-
 # Working credentials, no need to replace
 trust_commerce:
   login: 'TestMerchant'
@@ -643,7 +735,7 @@ trust_commerce:
 
 # Working credentials, no need to replace
 usa_epay:
-  login: 'yCaWGYQsSVR0S48B6AKMK07RQhaxHvGu'
+  login: '4EoZ5U2Q55j976W7eplC71i6b7kn4pcV'
 
 # Get credentials here: https://www.usaepay.com/developer/login
 usa_epay_advanced:
@@ -673,22 +765,27 @@ webpay:
   login: "test_secret_eHn4TTgsGguBcW764a2KA8Yd"
 
 # Working test credentials, no need to replace
+wepay:
+  client_id: "187493"
+  account_id: "1311201206"
+  access_token: "STAGE_4c6a319f9b6ef50e596ee3ea0b845f2fecd50fa0d8bc0b7483bd61c2018dbf5c"
+
+# Working test credentials with AVS/CVV support, no need to replace
 wirecard:
-  login: 56500
+  login: 00000031629CA9FA
   password: TestXAPTER
-
-world_pay_gateway:
-  login: LOGIN
-  password: PASSWORD
-
-iats_payments:
-  login: TEST88
-  password: TEST88
-
-bit_pay:
-  api_key: 'rKrahSl7WRrYeKRUhGzbvW3nBzo0jG4FPaL8uPYaoPk'
+  signature: 00000031629CAFD5
 
 wirecard_checkout_page:
   secret: B8AKTPWBRMNBV455FG6M2DANE99WU2
   shop_id: ''
   paymenttype: IDL
+
+world_pay_gateway:
+  login: LOGIN
+  password: PASSWORD
+
+worldpay_us:
+  acctid: MPNAB
+  subid: SPREE
+  merchantpin: "1234567890"

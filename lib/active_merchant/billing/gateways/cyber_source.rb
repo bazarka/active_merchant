@@ -313,7 +313,10 @@ module ActiveMerchant #:nodoc:
       end
 
       def build_create_subscription_request(payment_method, options)
-        options[:subscription] = (options[:subscription] || {}).merge(:frequency => "on-demand", :amount => 0, :automatic_renew => false)
+        default_subscription_params = {:frequency => "on-demand", :amount => 0, :automatic_renew => false}
+        options[:subscription] = default_subscription_params.update(
+          options[:subscription] || {}
+        )
 
         xml = Builder::XmlMarkup.new :indent => 2
         add_address(xml, payment_method, options[:billing_address], options)
@@ -321,13 +324,18 @@ module ActiveMerchant #:nodoc:
         if card_brand(payment_method) == 'check'
           add_check(xml, payment_method)
           add_check_payment_method(xml)
-          add_check_service(xml, options) if options[:setup_fee]
         else
           add_creditcard(xml, payment_method)
           add_creditcard_payment_method(xml)
-          add_purchase_service(xml, options) if options[:setup_fee]
         end
         add_subscription(xml, options)
+        if options[:setup_fee]
+          if card_brand(payment_method) == 'check'
+            add_check_service(xml, options)
+          else
+            add_purchase_service(xml, options)
+          end
+        end
         add_subscription_create_service(xml, options)
         add_business_rules_data(xml)
         xml.target!
@@ -515,7 +523,7 @@ module ActiveMerchant #:nodoc:
           end
 
           xml.tag! 'status',            options[:subscription][:status]                         if options[:subscription][:status]
-          xml.tag! 'amount',            options[:subscription][:amount]                         if options[:subscription][:amount]
+          xml.tag! 'amount',            amount(options[:subscription][:amount])                 if options[:subscription][:amount]
           xml.tag! 'numberOfPayments',  options[:subscription][:occurrences]                    if options[:subscription][:occurrences]
           xml.tag! 'automaticRenew',    options[:subscription][:automatic_renew]                if options[:subscription][:automatic_renew]
           xml.tag! 'frequency',         options[:subscription][:frequency]                      if options[:subscription][:frequency]
@@ -549,6 +557,7 @@ module ActiveMerchant #:nodoc:
           add_check(xml, payment_method_or_reference)
         else
           add_address(xml, payment_method_or_reference, options[:billing_address], options)
+          add_address(xml, payment_method_or_reference, options[:shipping_address], options, true)
           add_purchase_data(xml, money, true, options)
           add_creditcard(xml, payment_method_or_reference)
         end

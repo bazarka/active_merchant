@@ -42,6 +42,7 @@ module ActiveMerchant #:nodoc:
       self.supported_countries = ['CA']
       self.homepage_url = 'http://www.psigate.com/'
       self.display_name = 'Psigate'
+      self.ssl_version = :SSLv3
 
       SUCCESS_MESSAGE = 'Success'
       FAILURE_MESSAGE = 'The transaction was declined'
@@ -70,7 +71,7 @@ module ActiveMerchant #:nodoc:
       end
 
       def credit(money, authorization, options = {})
-        deprecated CREDIT_DEPRECATION_MESSAGE
+        ActiveMerchant.deprecated CREDIT_DEPRECATION_MESSAGE
         refund(money, authorization, options)
       end
 
@@ -200,17 +201,6 @@ module ActiveMerchant #:nodoc:
         else
           return FAILURE_MESSAGE if response[:errmsg].blank?
           return response[:errmsg].gsub(/[^\w]/, ' ').split.join(" ").capitalize
-        end
-      end
-
-      # Make a ruby type out of the response string
-      def normalize(field)
-        case field
-        when "true"   then true
-        when "false"  then false
-        when ""       then nil
-        when "null"   then nil
-        else field
         end
       end
 
