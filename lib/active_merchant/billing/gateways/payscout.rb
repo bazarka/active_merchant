@@ -155,8 +155,15 @@ module ActiveMerchant #:nodoc:
         post[:password]       = @options[:password]
         post[:type]           = action
 
-        request = post.merge(parameters).collect { |key, value| "#{key}=#{CGI.escape(value.to_s)}" }.join("&")
+        request = post.merge(parameters).collect { |key, value| "#{key}=#{URI.escape(value.to_s)}" }.join("&")
         request
+      end
+
+      def expdate(creditcard)
+        year  = sprintf("%.4i", creditcard.year)
+        month = sprintf("%.2i", creditcard.month)
+
+        "#{month}#{year[-2..-1]}"
       end
     end
   end

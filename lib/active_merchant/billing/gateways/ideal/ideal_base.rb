@@ -52,7 +52,10 @@ module ActiveMerchant #:nodoc:
       end
 
       def token
-        @token ||= create_fingerprint(@options[:pem])
+        if @token.nil?
+          @token = create_fingerprint(@options[:pem])
+        end
+        @token
       end
 
       # <?xml version="1.0" encoding="UTF-8"?>

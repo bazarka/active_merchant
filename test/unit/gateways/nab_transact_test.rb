@@ -21,7 +21,7 @@ class NabTransactTest < Test::Unit::TestCase
   def test_successful_purchase
     @gateway.expects(:ssl_post).with(&check_transaction_type(:purchase)).returns(successful_purchase_response)
 
-    response = @gateway.purchase(@amount, @credit_card, @options)
+    assert response = @gateway.purchase(@amount, @credit_card, @options)
     assert_instance_of Response, response
     assert_success response
 
@@ -43,7 +43,7 @@ class NabTransactTest < Test::Unit::TestCase
 
   def test_successful_authorize
     @gateway.expects(:ssl_post).with(&check_transaction_type(:authorization)).returns(successful_authorize_response)
-    response = @gateway.authorize(@amount, @credit_card, @options)
+    assert response = @gateway.authorize(@amount, @credit_card, @options)
     assert_equal '009887*test*009887*200', response.authorization
     assert response.test?
   end
@@ -62,7 +62,7 @@ class NabTransactTest < Test::Unit::TestCase
 
   def test_successful_capture
     @gateway.expects(:ssl_post).with(&check_transaction_type(:capture)).returns(successful_purchase_response)
-    response = @gateway.capture(@amount, '009887*test*009887*200')
+    assert response = @gateway.capture(@amount, '009887*test*009887*200')
     assert_equal '009887*test**200', response.authorization
     assert response.test?
   end
@@ -82,7 +82,7 @@ class NabTransactTest < Test::Unit::TestCase
   def test_unsuccessful_purchase
     @gateway.expects(:ssl_post).with(&check_transaction_type(:purchase)).returns(failed_purchase_response)
 
-    response = @gateway.purchase(@amount, @credit_card, @options)
+    assert response = @gateway.purchase(@amount, @credit_card, @options)
     assert_instance_of Response, response
     assert_failure response
     assert response.test?
@@ -92,7 +92,7 @@ class NabTransactTest < Test::Unit::TestCase
   def test_failed_login
     @gateway.expects(:ssl_post).returns(failed_login_response)
 
-    response = @gateway.purchase(@amount, @credit_card, @options)
+    assert response = @gateway.purchase(@amount, @credit_card, @options)
     assert_instance_of Response, response
     assert_failure response
     assert_equal "Invalid merchant ID", response.message
@@ -123,34 +123,12 @@ class NabTransactTest < Test::Unit::TestCase
     assert_success response
   end
 
-  def test_successful_credit
-    @gateway.expects(:ssl_post).with(&check_transaction_type(:unmatched_refund)).returns(successful_refund_response)
-    assert_success @gateway.credit(@amount, @credit_card, {:order_id => '1'})
-  end
-
   def test_failed_refund
     @gateway.expects(:ssl_post).with(&check_transaction_type(:refund)).returns(failed_refund_response)
 
-    response = @gateway.refund(@amount, "009887", {:order_id => '1'})
+    assert response = @gateway.refund(@amount, "009887", {:order_id => '1'})
     assert_failure response
     assert_equal "Only $1.00 available for refund", response.message
-  end
-
-  def test_request_timeout_default
-    stub_comms(@gateway, :ssl_request) do
-      @gateway.purchase(@amount, @credit_card, @options)
-    end.check_request do |method, endpoint, data, headers|
-      assert_match(/<timeoutValue>60/, data)
-    end.respond_with(successful_purchase_response)
-  end
-
-  def test_override_request_timeout
-    gateway = NabTransactGateway.new(login: 'login', password: 'password', request_timeout: 44)
-    stub_comms(gateway, :ssl_request) do
-      gateway.purchase(@amount, @credit_card, @options)
-    end.check_request do |method, endpoint, data, headers|
-      assert_match(/<timeoutValue>44/, data)
-    end.respond_with(successful_purchase_response)
   end
 
   private
@@ -163,7 +141,7 @@ class NabTransactTest < Test::Unit::TestCase
   end
 
   def valid_metadata(name, location)
-    return <<-XML.gsub(/^\s{4}/,'').gsub(/\n/, '')
+    valid_metadata = <<-XML.gsub(/^\s{4}/,'').gsub(/\n/, '')
     <metadata><meta name="ca_name" value="#{name}"/><meta name="ca_location" value="#{location}"/></metadata>
     XML
   end
@@ -173,7 +151,7 @@ class NabTransactTest < Test::Unit::TestCase
       block.call
     end.check_request do |method, endpoint, data, headers|
       metadata_matcher = Regexp.escape(valid_metadata(name, location))
-      assert_match %r{#{metadata_matcher}}, data
+      assert_match /#{metadata_matcher}/, data
     end.respond_with(successful_purchase_response)
   end
 

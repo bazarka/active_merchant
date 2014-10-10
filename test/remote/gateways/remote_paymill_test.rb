@@ -15,12 +15,6 @@ class RemotePaymillTest < Test::Unit::TestCase
     assert_equal 'General success response.', response.message
   end
 
-  def test_successful_purchase_with_token
-    assert response = @gateway.purchase(@amount, '098f6bcd4621d373cade4e832627b4f6', { description: 'from active merchant' } )
-    assert_success response
-    assert_equal 'General success response.', response.message
-  end
-
   def test_failed_store_card_attempting_purchase
     @credit_card.number = ''
     assert response = @gateway.purchase(@amount, @credit_card)
@@ -43,24 +37,6 @@ class RemotePaymillTest < Test::Unit::TestCase
     assert capture_response = @gateway.capture(@amount, response.authorization)
     assert_success capture_response
     assert_equal 'General success response.', capture_response.message
-  end
-
-  def test_successful_authorize_and_capture_with_token
-    assert response = @gateway.authorize(@amount, '098f6bcd4621d373cade4e832627b4f6')
-    assert_success response
-    assert_equal 'General success response.', response.message
-    assert response.authorization
-
-    assert capture_response = @gateway.capture(@amount, response.authorization, { description: 'from active merchant' })
-    assert_success capture_response
-    assert_equal 'General success response.', capture_response.message
-  end
-
-  def test_successful_authorize_with_token
-    assert response = @gateway.authorize(@amount, '098f6bcd4621d373cade4e832627b4f6', { description: 'from active merchant' })
-    assert_success response
-    assert_equal 'General success response.', response.message
-    assert response.authorization
   end
 
   def test_failed_authorize

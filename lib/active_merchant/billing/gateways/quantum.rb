@@ -69,7 +69,7 @@ module ActiveMerchant #:nodoc:
       end
 
       def credit(money, identification, options = {})
-        ActiveMerchant.deprecated CREDIT_DEPRECATION_MESSAGE
+        deprecated CREDIT_DEPRECATION_MESSAGE
         refund(money, identification, options)
       end
 
@@ -241,7 +241,7 @@ module ActiveMerchant #:nodoc:
               parse_element(reply, node)
             end
           end
-        rescue Exception
+        rescue Exception => e
           reply[:request_status] = 'Failure'
           reply[:request_message] = "Failure: There was a problem parsing the response XML"
         end

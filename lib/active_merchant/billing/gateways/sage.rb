@@ -1,6 +1,5 @@
 require File.dirname(__FILE__) + '/sage/sage_bankcard'
 require File.dirname(__FILE__) + '/sage/sage_virtual_check'
-require File.dirname(__FILE__) + '/sage/sage_vault'
 
 module ActiveMerchant #:nodoc:
   module Billing #:nodoc:
@@ -121,7 +120,7 @@ module ActiveMerchant #:nodoc:
       end
 
       def credit(money, source, options = {})
-        ActiveMerchant.deprecated CREDIT_DEPRECATION_MESSAGE
+        deprecated CREDIT_DEPRECATION_MESSAGE
         refund(money, source, options)
       end
 
@@ -139,26 +138,7 @@ module ActiveMerchant #:nodoc:
         end
       end
 
-      # Stores a credit card in the Sage vault.
-      #
-      # ==== Parameters
-      #
-      # * <tt>credit_card</tt> - The CreditCard object to be stored.
-      def store(credit_card, options = {})
-        vault.store(credit_card, options)
-      end
-
-      # Deletes a stored card from the Sage vault.
-      #
-      # ==== Parameters
-      #
-      # * <tt>identification</tt> - The 'GUID' identifying the stored card.
-      def unstore(identification, options = {})
-        vault.unstore(identification, options)
-      end
-
       private
-
       def bankcard
         @bankcard ||= SageBankcardGateway.new(@options)
       end
@@ -166,10 +146,7 @@ module ActiveMerchant #:nodoc:
       def virtual_check
         @virtual_check ||= SageVirtualCheckGateway.new(@options)
       end
-
-      def vault
-        @vault ||= SageVaultGateway.new(@options)
-      end
     end
   end
 end
+

@@ -1,5 +1,3 @@
-require 'active_merchant/errors'
-
 require 'active_merchant/billing/avs_result'
 require 'active_merchant/billing/cvv_result'
 require 'active_merchant/billing/credit_card_methods'

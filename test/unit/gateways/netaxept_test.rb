@@ -46,7 +46,7 @@ class NetaxeptTest < Test::Unit::TestCase
 
   def test_requires_order_id
     assert_raise(ArgumentError) do
-      @gateway.purchase(@amount, @credit_card, {})
+      response = @gateway.purchase(@amount, @credit_card, {})
     end
   end
 

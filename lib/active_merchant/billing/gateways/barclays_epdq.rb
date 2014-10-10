@@ -63,7 +63,7 @@ module ActiveMerchant #:nodoc:
       # code returned by ePDQ
       def credit(money, creditcard_or_authorization, options = {})
         if creditcard_or_authorization.is_a?(String)
-          ActiveMerchant.deprecated CREDIT_DEPRECATION_MESSAGE
+          deprecated CREDIT_DEPRECATION_MESSAGE
           refund(money, creditcard_or_authorization, options)
         else
           credit_new_order(money, creditcard_or_authorization, options)

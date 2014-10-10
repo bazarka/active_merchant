@@ -2,12 +2,12 @@ require 'test_helper'
 
 class ConektaTest < Test::Unit::TestCase
   def setup
-    @gateway = ConektaGateway.new(:key => "key_eYvWV7gSDkNYXsmr")
+    @gateway = ConektaGateway.new(:key => "1tv5yJp3xnVZ7eK67m4h")
 
     @amount = 300
 
     @credit_card = ActiveMerchant::Billing::CreditCard.new(
-      :number             => "4242424242424242",
+      :number             => "4111111111111111",
       :verification_value => "183",
       :month              => "01",
       :year               => "2018",
@@ -66,7 +66,7 @@ class ConektaTest < Test::Unit::TestCase
 
   def test_unsuccessful_refund
     @gateway.expects(:ssl_request).returns(failed_refund_response)
-    assert response = @gateway.refund(@amount, "1", @options)
+    assert response = @gateway.refund("1", @amount, @options)
     assert_failure response
     assert response.test?
   end
@@ -89,12 +89,12 @@ class ConektaTest < Test::Unit::TestCase
 
   def test_unsuccessful_capture
     @gateway.expects(:ssl_request).returns(failed_purchase_response)
-    assert response = @gateway.capture(@amount, "1", @options)
+    assert response = @gateway.capture("1", @amount, @options)
     assert_failure response
     assert response.test?
   end
 
-  def test_invalid_key
+  def test_invalid_login
     gateway = ConektaGateway.new(:key => 'invalid_token')
     gateway.expects(:ssl_request).returns(failed_login_response)
     assert response = gateway.purchase(@amount, @credit_card, @options)
