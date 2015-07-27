@@ -73,11 +73,11 @@ module ActiveMerchant #:nodoc:
           end
 
           def generate_signature_string
-            PAYMENT_HOOK_SIGNATURE_FIELDS.map { |key| params[key.to_s] } * "|" + "#{@options[:key]}"
+            PAYMENT_HOOK_SIGNATURE_FIELDS.map { |key| params[key.to_s] } * "|" + "|#{@options[:key]}"
           end
 
           def generate_signature_verify
-            VERIFY_HOOK_SIGNATURE_FIELDS.map { |key| params[key.to_s] } * "|" + "#{@options[:key]}"
+            VERIFY_HOOK_SIGNATURE_FIELDS.map { |key| params[key.to_s] } * "|" + "|#{@options[:key]}"
           end
 
           def generate_signature(verify = false)
