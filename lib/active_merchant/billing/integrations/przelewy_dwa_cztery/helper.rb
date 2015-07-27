@@ -1,7 +1,7 @@
 module ActiveMerchant #:nodoc:
   module Billing #:nodoc:
     module Integrations #:nodoc:
-      module Przelewy24
+      module PrzelewyDwaCztery
         class Helper < ActiveMerchant::Billing::Integrations::Helper
           def initialize(order, account, options = {})
             options = {:currency => 'PLN'}.merge options

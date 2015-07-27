@@ -4,7 +4,7 @@ require 'time'
 module ActiveMerchant #:nodoc:
   module Billing #:nodoc:
     module Integrations #:nodoc:
-      module Przelewy24
+      module PrzelewyDwaCztery
         class Notification < ActiveMerchant::Billing::Integrations::Notification
 
           #przelewy24 nie wysylaja zadnego statusu. dla niepopranej odpowiedzi nie ma zadnego requesta
