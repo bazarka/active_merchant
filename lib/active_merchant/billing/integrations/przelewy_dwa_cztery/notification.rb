@@ -14,7 +14,7 @@ module ActiveMerchant #:nodoc:
 
           # Id of this transaction (paypal number)
           def transaction_id
-            params['p24_statement']
+            params['p24_order_id']
           end
 
           # the money amount we received in X.2 decimal.
