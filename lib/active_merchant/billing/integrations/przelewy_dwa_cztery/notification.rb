@@ -12,7 +12,7 @@ module ActiveMerchant #:nodoc:
             params['p24_statement'].present?
           end
 
-          # Id of this transaction (paypal number)
+          # Id of this transaction (przelewy24 number)
           def transaction_id
             params['p24_order_id']
           end
@@ -23,11 +23,15 @@ module ActiveMerchant #:nodoc:
           end
 
           def complete?
-            sparams['p24_statement'].present?
+            params['p24_statement'].present?
           end
 
           def currency
-            orginal_amount.split(' ')[1]
+            params['p24_currency']
+          end
+
+          def order_id
+            params['p24_session_id']
           end
 
           def key=(value)
@@ -53,7 +57,7 @@ module ActiveMerchant #:nodoc:
 
           PAYMENT_HOOK_SIGNATURE_FIELDS = [
               :p24_session_id,
-              :p24_order_id,
+              :p24_merchant_id,
               :p24_amount,
               :p24_currency
           ]
